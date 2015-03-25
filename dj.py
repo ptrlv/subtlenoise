@@ -88,7 +88,7 @@ def main():
         logging.info(txt)
         noteoff(inst, track, note)
 
-# using OSCBundle is more natural, just get timeTags to work!
+# using OSCBundle is more natural, just get timeTags to work
 #        bundle = OSC.OSCBundle()
 #        oscmsg = OSC.OSCMessage(address='/renoise/trigger/note_off')
 #        oscmsg.append([inst, track, note])
@@ -186,6 +186,9 @@ def main():
         # 5. dh_perc_shake_chimes
         # 6. Noise - Turbine   (Instr./Elements)
         # 7. Noise - 100Hz     
+        # 8. 
+        # 9. Pad - Mind War
+        #10. dh_kick_sub_pitchy
 
         # track assignment is:
         # 0. testing

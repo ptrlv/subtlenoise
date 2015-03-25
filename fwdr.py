@@ -28,7 +28,7 @@ def setup():
 
     logger = logging.getLogger()
     logger.setLevel(logging._levelNames[loglevel])
-    fmt = '[MSG:%(levelname)s %(asctime)s] %(message)s'
+    fmt = '[FWDR:%(levelname)s %(asctime)s] %(message)s'
     formatter = logging.Formatter(fmt, '%T')
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
