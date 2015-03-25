@@ -53,5 +53,5 @@ $ pip install pyzmq
 2. use the ./fwdr.py script to setup a zeromq forwarder
 3. consume messages using the dj.py script
   1. See help options `./dj.py -h`
-4. start Renoise change OSC preferences to 'Enable Server'
+4. start Renoise and check OSC preferences to 'Enable Server'
 5. play with dj.py options and send OSC to Renoise
