@@ -35,22 +35,23 @@ The following components are currently being used:
 * Renoise (synth engine)
 
 A sound rendering engine is required and currently the commercial (and awesome)
-application used is called [Renoise](www.renoise.com). A suitable Opensource
+application used is called [Renoise](http://www.renoise.com). A suitable Opensource
 solution would be something like
 [Supercollider](http://supercollider.sourceforge.net/). Most synth engines will
 accept Open Sound Control messages as output by the python orchestration
 script. To do this we need the pyOSC client library and also pyzmq bindings.
 Install via pip:
 
+```
 $ pip install pyOSC
 $ pip install pyzmq
-
+```
 
 ### Run it
 
 1. run logstash and output zeromq messages [module](http://logstash.net/docs/latest/outputs/zeromq)
 2. use the ./fwdr.py script to setup a zeromq forwarder
 3. consume messages using the dj.py script
-  1. See help options `./dj.py -h``
+  1. See help options `./dj.py -h`
 4. start Renoise change OSC preferences to 'Enable Server'
 5. play with dj.py options and send OSC to Renoise
