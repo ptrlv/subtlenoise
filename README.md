@@ -65,7 +65,7 @@ $ pip install pyzmq
 4. Nice description of how to process incoming data [thelisteningmachine](http://www.thelisteningmachine.org/about)
 5. pertinent comment "...more than just white noise. It is a richly layered
 audio experience, with enough variation to prevent monotony but not so variable
-as to become distracting (which ambient sound should never be)” - [www.youtube.com/watch?v=icFT76pHgoM](youtube)
+as to become distracting (which ambient sound should never be)” - [http://www.youtube.com/watch?v=icFT76pHgoM](youtube)
 
 ### this is not
 
