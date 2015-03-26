@@ -23,7 +23,9 @@ using audio is with alerts. ie. play a loud annoying sound when a bad thing
 happens. eg. LHC beam dump (toilet flush) and eg. LIGOS beam lock lost ([train
 whistle](https://vimeo.com/122982348)).
 
-Also, ambient sounds can be subtle and useful ([ask the captain](https://vimeo.com/122996114))
+Also, ambient sounds can be useful ([ask the captain](https://vimeo.com/122118684))
+
+And also subtle ([ask Paul](https://vimeo.com/122996114))
 
 ### How?
 
