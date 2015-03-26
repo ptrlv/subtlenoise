@@ -55,3 +55,22 @@ $ pip install pyzmq
   1. See help options `./dj.py -h`
 4. start Renoise and check OSC preferences to 'Enable Server'
 5. play with dj.py options and send OSC to Renoise
+
+
+### Comments
+
+1. The abscence of signal is informative
+2. Needs to be non-intrusive otherwise it becomes very annoying very quickly
+3. Monitorrama talk from Joe Ruscio with some toptips for visualisation [http://vimeo.com/62630749](http://vimeo.com/62630749)
+4. Nice description of how to process incoming data [thelisteningmachine)[http://www.thelisteningmachine.org/about)
+5. pertinent comment "...more than just white noise. It is a richly layered
+audio experience, with enough variation to prevent monotony but not so variable
+as to become distracting (which ambient sound should never be)” - [www.youtube.com/watch?v=icFT76pHgoM](youtube)
+
+### this is not
+
+1. NOT entertainment  [BBC sounds of space](http://www.bbc.co.uk/programmes/b050bwpp)
+2. NOT musical  [LHCchamber music](https://www.youtube.com/watch?v=gPmQcviT-R4)
+3. NOT a curiosity [LHC sound](lhcsound.hep.ucl.ac.uk/)
+
+The above are good examples of outreach and inspirational news items, but are not the sonification we’re looking for...
