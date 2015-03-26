@@ -71,6 +71,6 @@ as to become distracting (which ambient sound should never be)” - [http://www.
 
 1. NOT entertainment  [BBC sounds of space](http://www.bbc.co.uk/programmes/b050bwpp)
 2. NOT musical  [LHCchamber music](https://www.youtube.com/watch?v=gPmQcviT-R4)
-3. NOT a curiosity [LHC sound](lhcsound.hep.ucl.ac.uk/)
+3. NOT a curiosity [LHC sound](http://lhcsound.hep.ucl.ac.uk/)
 
 The above are good examples of outreach and inspirational news items, but are not the sonification we’re looking for...
