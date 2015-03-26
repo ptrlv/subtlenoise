@@ -62,7 +62,7 @@ $ pip install pyzmq
 1. The abscence of signal is informative
 2. Needs to be non-intrusive otherwise it becomes very annoying very quickly
 3. Monitorrama talk from Joe Ruscio with some toptips for visualisation [http://vimeo.com/62630749](http://vimeo.com/62630749)
-4. Nice description of how to process incoming data [thelisteningmachine)[http://www.thelisteningmachine.org/about)
+4. Nice description of how to process incoming data [thelisteningmachine](http://www.thelisteningmachine.org/about)
 5. pertinent comment "...more than just white noise. It is a richly layered
 audio experience, with enough variation to prevent monotony but not so variable
 as to become distracting (which ambient sound should never be)” - [www.youtube.com/watch?v=icFT76pHgoM](youtube)
