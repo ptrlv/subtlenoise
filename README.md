@@ -13,23 +13,23 @@ to sonify incoming messages and output messages suitable for audio-rendering.
 
 We want monitoring to be less intrusive. The well-known pattern of time-series
 histogram is visually rich but also visually overwhelming when digesting many
-such plots. This project attempts to use sonification to add an audiable
-component.
+such plots. This project attempts to use sonification to provide an [Auditory
+display.](http://en.wikipedia.org/wiki/Auditory_display)
 
 ### Why?
 
-An audio stream is less intrusive if done correctly. A common pattern when
-using audio is with alerts. ie. play a loud annoying sound when a bad thing
-happens. eg. LHC beam dump (toilet flush) and eg. LIGOS beam lock lost ([train
-whistle](https://vimeo.com/122982348)).
+An audio stream is less intrusive if done correctly (and horribly annoying if
+done poorly). Ultimately we want a situation where the ambient sounds can be
+useful and totally unobstrusive ([as the captain
+knows](https://vimeo.com/122118684))
 
-Also, ambient sounds can be useful ([ask the captain](https://vimeo.com/122118684))
-
-And also subtle ([ask Paul](https://vimeo.com/122996114))
+The human brain is adept at extracting information from subtle environmental
+noise ([Paul knows](https://vimeo.com/122996114))
 
 ### How?
 
-The following components are currently being used:
+The following components are being used to collect, transport, translate, and
+emit messages in the Subtlenoise pipeline:
 
 * logstash (collection)
 * zeromq (messaging)
@@ -37,12 +37,12 @@ The following components are currently being used:
 * Renoise (synth engine)
 
 A sound rendering engine is required and currently the commercial (and awesome)
-application used is called [Renoise](http://www.renoise.com). A suitable Opensource
-solution would be something like
-[Supercollider](http://supercollider.sourceforge.net/). Most synth engines will
-accept Open Sound Control messages as output by the python orchestration
-script. To do this we need the pyOSC client library and also pyzmq bindings.
-Install via pip:
+application used is called [Renoise](http://www.renoise.com). A suitable
+Opensource solution would be something like
+[Supercollider](http://supercollider.sourceforge.net/) or
+[Overtone](http://overtone.github.io/). Most synth engines will accept Open
+Sound Control messages as output by the python orchestration script. To do this
+we need the pyOSC client library and also pyzmq bindings.  Install via pip:
 
 ```
 $ pip install pyOSC
@@ -62,12 +62,24 @@ $ pip install pyzmq
 ### Comments
 
 1. The abscence of signal is informative
-2. Needs to be non-intrusive otherwise it becomes very annoying very quickly
-3. Monitorrama talk from Joe Ruscio with some toptips for visualisation [http://vimeo.com/62630749](http://vimeo.com/62630749)
-4. Nice description of how to process incoming data [thelisteningmachine](http://www.thelisteningmachine.org/about)
-5. pertinent comment "...more than just white noise. It is a richly layered
+
+2. A common pattern is to use audio cues when certain events occur, clumsily
+called [Earcons](http://en.wikipedia.org/wiki/Earcon). For example, the train
+whistle when the LIGOS experiment loses beam lock ([Earcon
+example](https://vimeo.com/122982348)).
+
+3. Needs to be unobtrusive otherwise it becomes very annoying very quickly
+
+4. Monitorrama talk from Joe Ruscio with some toptips for visualisation
+[http://vimeo.com/62630749](http://vimeo.com/62630749)
+
+5. Nice description of how to process incoming data
+[thelisteningmachine](http://www.thelisteningmachine.org/about)
+
+6. pertinent comment "...more than just white noise. It is a richly layered
 audio experience, with enough variation to prevent monotony but not so variable
-as to become distracting (which ambient sound should never be)” - [http://www.youtube.com/watch?v=icFT76pHgoM](youtube)
+as to become distracting (which ambient sound should never be)” -
+[http://www.youtube.com/watch?v=icFT76pHgoM](youtube)
 
 ### this is not
 
