@@ -20,8 +20,7 @@ display.](http://en.wikipedia.org/wiki/Auditory_display)
 
 An audio stream is less intrusive if done correctly (and horribly annoying if
 done poorly). Ultimately we want a situation where the ambient sounds can be
-useful and totally unobstrusive ([as the captain
-knows](https://vimeo.com/122118684))
+useful and totally unobstrusive ([Picard knows](https://vimeo.com/122118684))
 
 The human brain is adept at extracting information from subtle environmental
 noise ([Paul knows](https://vimeo.com/122996114))
@@ -31,32 +30,28 @@ noise ([Paul knows](https://vimeo.com/122996114))
 The following components are being used to collect, transport, translate, and
 emit messages in the Subtlenoise pipeline:
 
-* logstash (collection)
-* zeromq (messaging)
+* UDP (collection)
+* mqtt (messaging)
 * python (orchestration and translation of messages)
-* Renoise (synth engine)
+* SonicPI (audio rendering)
 
-A sound rendering engine is required and currently the commercial (and awesome)
-application used is called [Renoise](http://www.renoise.com). A suitable
-Opensource solution would be something like
-[Supercollider](http://supercollider.sourceforge.net/) or
-[Overtone](http://overtone.github.io/). Most synth engines will accept Open
-Sound Control messages as output by the python orchestration script. To do this
-we need the pyOSC client library and also pyzmq bindings.  Install via pip:
+Opensource sound rendering tool is [SonicPi](https://sonic-pi.net/) which uses
+[Supercollider](http://supercollider.sourceforge.net/) under the hood.  Most
+synth engines will accept Open Sound Control (OSC) messages as output by the
+python orchestration script. To do this we need the python-osc and mqtt
+packages. Install via pip:
 
 ```
-$ pip install pyOSC
-$ pip install pyzmq
+$ pip install paho-mqtt
+$ pip install python-osc
 ```
 
 ### Run it
 
-1. run logstash and output zeromq messages [module](http://logstash.net/docs/latest/outputs/zeromq)
-2. use the ./fwdr.py script to setup a zeromq forwarder
-3. consume messages using the dj.py script
-  1. See help options `./dj.py -h`
-4. start Renoise and check OSC preferences to 'Enable Server'
-5. play with dj.py options and send OSC to Renoise
+1. use dj-mqtt.py to subscribe to the mqtt message stream
+2. consume messages using the dj-mqtt.py script
+3. start Sonic Pi and ensure the OSC server is running
+5. experiment with Sonic Pi ruby code (example is render.rb)
 
 
 ### Comments
