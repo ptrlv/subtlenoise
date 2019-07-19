@@ -1,2 +1,4 @@
 paho-mqtt==1.4.0
 python-osc==1.7.0
+keyboard
+colorama

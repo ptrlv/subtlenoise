@@ -19,6 +19,14 @@ import paho.mqtt.client as mqtt
 from pythonosc import osc_message_builder
 from pythonosc import udp_client
 
+#Colorama is a workaround to allow windows' terminal to interpret ANSI messages.
+#Should not affect other OSs.
+from colorama import init
+init()
+
+#Allows listening for keyboard input without pausing program.
+import keyboard
+
 PORT=1883
 HOST='148.88.67.14'
 class bcolors:
@@ -35,6 +43,8 @@ def on_message(mosq, userdata, msg):
     global args
     global client
 
+    global isPrinting #Checks whether input stream should be paused.
+
     content = msg.payload.decode("utf-8").rstrip()[:140]
     try: 
         if args.filter and any(filter in content for filter in args.filter):
@@ -42,10 +52,20 @@ def on_message(mosq, userdata, msg):
             logging.info(msg)
             return
 
+        #Better implementation of printing check.
+        if isPrinting:
+            if 'fault' in content:
+                print(bcolors.FAIL+content+bcolors.ENDC)
+            else:
+                print(content)
+
+        '''
         if 'fault' in content:
-            print(bcolors.FAIL+content+bcolors.ENDC)
-        else:
+            if isPrinting:
+                print(bcolors.FAIL+content+bcolors.ENDC)
+        elif isPrinting:
             print(content)
+        '''
 
         # send a ping on every incoming msg
         if args.test:
@@ -100,6 +120,11 @@ def setup():
 def main():
     global args
     global client
+
+    #Checks whether input stream should be paused.
+    global isPrinting
+    isPrinting = True
+
     args = setup()
 
     client = udp_client.UDPClient(args.ip, args.port)
@@ -110,6 +135,30 @@ def main():
     mqttc.on_message = on_message
     while True:
         mqttc.loop()
+        #Checks for if pause key 'p' or resume key 'r' have been pressed.
+        try:
+            #Stops printing incoming mqtt messages to terminal.
+            if keyboard.is_pressed('ctrl+shift+p') and isPrinting == True: #isPrinting check stops multiple prints on key hold.
+                print(bcolors.OKGREEN+"Pause feed."+bcolors.ENDC)
+                isPrinting = False
+
+            #Resumes printing incoming mqtt messages to terminal.
+            if keyboard.is_pressed('ctrl+shift+r') and isPrinting == False:
+                print(bcolors.OKGREEN+"Resume feed."+bcolors.ENDC)
+                isPrinting = True
+
+            #Stops sending osc messages to SonicPi.
+            if keyboard.is_pressed('ctrl+shift+m') and args.mute == False:
+                print(bcolors.OKGREEN+"Muting program."+bcolors.ENDC)
+                args.mute = True
+
+            #Resumes sending osc messages to SonicPi.
+            if keyboard.is_pressed('ctrl+shift+n') and args.mute == True:
+                print(bcolors.OKGREEN+"Unmuting program."+bcolors.ENDC)
+                args.mute = False
+
+        except:
+            pass
 
 if __name__ == "__main__":
     sys.exit(main())
