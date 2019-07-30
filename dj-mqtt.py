@@ -13,6 +13,7 @@ import random
 import time
 import socket
 import sys
+import math
 
 import paho.mqtt.client as mqtt
 #from pythonosc import osc_bundle
@@ -74,17 +75,46 @@ def on_message(mosq, userdata, msg):
             client.send(msg.build())
     
         if args.mute: return
-
+        """
         if 'running' in content:
             duration = int(content.split()[1])
             msg = osc_message_builder.OscMessageBuilder(address = "/starting")
             msg.add_arg(duration)
             client.send(msg.build())
-
+        """
         if 'exiting' in content:
             duration = int(content.split()[1])
             msg = osc_message_builder.OscMessageBuilder(address = "/goodness")
-            msg.add_arg(duration)
+            #msg.add_arg(duration)
+
+            #Takes log of duration and checks which midi note will be played to represent it.
+            #8 bins for durations to be fit into. They are the notes of the harmonic series.
+            
+            #scale = [33, 45, 52, 57, 61, 64, 69, 71] #Shortest = lowest
+            scale = [71, 69, 64, 61, 57, 52, 45, 33] #Shortest = highest
+
+            logTime = math.log(duration)
+            midi = 0
+            if 0.0 <= logTime <= 4.0:
+                midi = scale[0]
+            elif 4.0 <= logTime <= 5.0:
+                midi = scale[1]
+            elif 5.0 <= logTime <= 6.0:
+                midi = scale[2]
+            elif 6.0 <= logTime <= 7.0:
+                midi = scale[3]
+            elif 7.0 <= logTime <= 8.0:
+                midi = scale[4]
+            elif 8.0 <= logTime <= 9.0:
+                midi = scale[5]
+            elif 9.0 <= logTime <= 10.0:
+                midi = scale[6]
+            elif 10.0 <= logTime:
+                midi = scale[7]
+            else:
+                print("ERROR BIN SYSTEM NOT WORKING.")
+
+            msg.add_arg(midi)
             client.send(msg.build())
 
         if 'fault' in content:

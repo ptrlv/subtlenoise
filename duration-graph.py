@@ -13,6 +13,7 @@ import random
 import time
 import socket
 import sys
+import math
 
 import paho.mqtt.client as mqtt
 #from pythonosc import osc_bundle
@@ -106,13 +107,13 @@ def on_message(mosq, userdata, msg):
         #if isPrinting:
         if 'exiting' in content: #duration = int(content.split()[1])
             duration = int(content.split()[1])
-            print(duration)
+            print(str(duration) + "\t" + str(math.log(duration)))
             if duration != 0:
-            	update(duration)
+            	update(math.log(duration)) #Graphing log of duration to get a better distribution of results.
 
         else:
             duration = 0
-            print(duration)
+            #print(duration)
 
     except ValueError:
         msg = "ValueError: {}".format(content)
