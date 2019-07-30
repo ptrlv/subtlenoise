@@ -15,18 +15,19 @@ live_loop :badness do
   n = sync "/osc/badness"
   puts n
   use_synth :prophet
-  play 30, attack: 0, decay: 0.05, release: 1.0, res: 0.9, amp: 0.3
+  play 39, attack: 0, decay: 0.05, release: 1.0, res: 0.9, amp: 0.5
 end
 
 live_loop :goodness do
   use_real_time
   n = sync "/osc/goodness"
   puts n
-  #duration = Math.log10([n[0], 1].max)
-  duration = 5.0
+  duration = 2 + Math.log10([n[1], 1].max)
+  #duration = 5.0
+  ampFactor = 0.2 + 20.0/n[0] #Increases volume of lower notes
   
   midi = n[0]
-  print midi
+  #print midi
   use_synth :hollow
-  play midi, attack: 0, decay: 0.05, release: duration, res: 0.9, amp: 0.5
+  play midi, attack: 0, decay: 0.05, release: duration, res: 0.9, amp: ampFactor
 end

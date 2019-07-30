@@ -95,7 +95,7 @@ def on_message(mosq, userdata, msg):
 
             logTime = math.log(duration)
             midi = 0
-            if 0.0 <= logTime <= 4.0:
+            if logTime <= 4.0:
                 midi = scale[0]
             elif 4.0 <= logTime <= 5.0:
                 midi = scale[1]
@@ -115,6 +115,7 @@ def on_message(mosq, userdata, msg):
                 print("ERROR BIN SYSTEM NOT WORKING.")
 
             msg.add_arg(midi)
+            msg.add_arg(duration)
             client.send(msg.build())
 
         if 'fault' in content:
