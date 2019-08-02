@@ -24,10 +24,10 @@ live_loop :goodness do
   puts n
   duration = 2 + Math.log10([n[1], 1].max)
   #duration = 5.0
-  ampFactor = 0.2 + 20.0/n[0] #Increases volume of lower notes
+  ampFactor = 0.0 + 20.0/n[0] #Increases volume of lower notes
   
   midi = n[0]
   #print midi
   use_synth :hollow
-  play midi, attack: 0, decay: 0.05, release: duration, res: 0.9, amp: ampFactor
+  play midi, attack: 0, decay: 0.05, release: duration, res: 0.8, amp: ampFactor, cutoff: 110, pan: n[2]
 end

@@ -14,6 +14,7 @@ import time
 import socket
 import sys
 import math
+import os
 
 import paho.mqtt.client as mqtt
 #from pythonosc import osc_bundle
@@ -41,14 +42,23 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def hashToPan(hashable):
-    #Hashes an input and returns a pan value from -1 to 1.
+    #For testing wants to make a tuple containing job site string, hash of job site and pan value.
+    #Create set of these tuples and then update it every time a new value is present.
+    #If updating set, append a text file with the new addition.
+
+    global testSet
 
     num = hash(hashable)
     digits = int(math.log10(abs(num)))+1
 
     pan = num * 10**(digits*-1)
 
-    return pan
+    tup = (hashable, num, pan)
+
+    if tup not in testSet:
+        testSet.add(tup)
+        with open("PanList.txt", "a+") as myfile:
+            myfile.write(str(tup[0]) + '\t' + str(tup[1]) + '\t' + str(tup[2]) + '\n')
 
 def on_message(mosq, userdata, msg):
     global args
@@ -70,14 +80,6 @@ def on_message(mosq, userdata, msg):
             else:
                 print(content)
 
-        '''
-        if 'fault' in content:
-            if isPrinting:
-                print(bcolors.FAIL+content+bcolors.ENDC)
-        elif isPrinting:
-            print(content)
-        '''
-
         # send a ping on every incoming msg
         if args.test:
             msg = osc_message_builder.OscMessageBuilder(address = "/ping")
@@ -85,59 +87,12 @@ def on_message(mosq, userdata, msg):
             client.send(msg.build())
     
         if args.mute: return
-        """
-        if 'running' in content:
-            duration = int(content.split()[1])
-            msg = osc_message_builder.OscMessageBuilder(address = "/starting")
-            msg.add_arg(duration)
-            client.send(msg.build())
-        """
+
         if 'exiting' in content:
-            duration = int(content.split()[1])
-            msg = osc_message_builder.OscMessageBuilder(address = "/goodness")
-            #msg.add_arg(duration)
-
-            #Takes log of duration and checks which midi note will be played to represent it.
-            #8 bins for durations to be fit into. They are the notes of the harmonic series.
-            
-            #scale = [33, 45, 52, 57, 61, 64, 69, 71] #Shortest = lowest
-            scale = [71, 69, 64, 61, 57, 52, 45, 33] #Shortest = highest
-
-            logTime = math.log(duration)
-            midi = 0
-            if logTime <= 4.0:
-                midi = scale[0]
-            elif 4.0 <= logTime <= 5.0:
-                midi = scale[1]
-            elif 5.0 <= logTime <= 6.0:
-                midi = scale[2]
-            elif 6.0 <= logTime <= 7.0:
-                midi = scale[3]
-            elif 7.0 <= logTime <= 8.0:
-                midi = scale[4]
-            elif 8.0 <= logTime <= 9.0:
-                midi = scale[5]
-            elif 9.0 <= logTime <= 10.0:
-                midi = scale[6]
-            elif 10.0 <= logTime:
-                midi = scale[7]
-            else:
-                print("ERROR BIN SYSTEM NOT WORKING.")
-
-            msg.add_arg(midi)
-            msg.add_arg(duration)
-
             toSplit = content.split()[-1]
             toHash = toSplit.split(':')[0]
-            msg.add_arg(hashToPan(toHash))
+            hashToPan(toHash)
 
-            client.send(msg.build())
-
-        if 'fault' in content:
-            duration = int(content.split()[1])
-            msg = osc_message_builder.OscMessageBuilder(address = "/badness")
-            msg.add_arg(duration)
-            client.send(msg.build())
 
     except ValueError:
         msg = "ValueError: {}".format(content)
@@ -166,6 +121,14 @@ def setup():
 def main():
     global args
     global client
+
+    #Sets up the set for checking for unique hashes and deletes the old list if there is one.
+    global testSet
+    testSet = set()
+    try:
+        os.remove("PanList.txt")
+    except:
+        pass
 
     #Checks whether input stream should be paused.
     global isPrinting
