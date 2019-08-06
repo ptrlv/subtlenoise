@@ -40,15 +40,20 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def hashToPan(hashable):
+def hashToP_C(hashable):
     #Hashes an input and returns a pan value from -1 to 1.
-
     num = hash(hashable)
     digits = int(math.log10(abs(num)))+1
 
     pan = num * 10**(digits*-1)
 
-    return pan
+    sign = 1
+    if num % 2 == 0:
+        sign = -1
+
+    cutoff = 95 + 15*sign*abs(pan)
+
+    return (pan, cutoff)
 
 def on_message(mosq, userdata, msg):
     global args
@@ -129,7 +134,10 @@ def on_message(mosq, userdata, msg):
 
             toSplit = content.split()[-1]
             toHash = toSplit.split(':')[0]
-            msg.add_arg(hashToPan(toHash))
+            
+            params = hashToP_C(toHash)
+            msg.add_arg(params[0])
+            msg.add_arg(params[1])
 
             client.send(msg.build())
 

@@ -41,7 +41,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def hashToPan(hashable):
+def hashToP_C(hashable):
     #For testing wants to make a tuple containing job site string, hash of job site and pan value.
     #Create set of these tuples and then update it every time a new value is present.
     #If updating set, append a text file with the new addition.
@@ -53,12 +53,23 @@ def hashToPan(hashable):
 
     pan = num * 10**(digits*-1)
 
-    tup = (hashable, num, pan)
+    #Filter cutoff range is 80 - 110
+    #Pans are range -1 to 1. Could map this directly to filter cutoff by 95 + pan*15
+    #cutoff = 95 + pan*15
+
+    #Want to try and distribute better. Set even hashes to have low cutoff, odd to have high.
+    sign = 1
+    if num % 2 == 0:
+        sign = -1
+
+    cutoff = 95 + 15*sign*abs(pan)
+
+    tup = (hashable, num, cutoff, pan)
 
     if tup not in testSet:
         testSet.add(tup)
         with open("PanList.txt", "a+") as myfile:
-            myfile.write(str(tup[0]) + '\t' + str(tup[1]) + '\t' + str(tup[2]) + '\n')
+            myfile.write(str(tup[0]) + '\t' + str(tup[1]) + '\t' + str(tup[2]) + '\t' + str(tup[3]) + '\n')
 
 def on_message(mosq, userdata, msg):
     global args
@@ -91,7 +102,7 @@ def on_message(mosq, userdata, msg):
         if 'exiting' in content:
             toSplit = content.split()[-1]
             toHash = toSplit.split(':')[0]
-            hashToPan(toHash)
+            hashToP_C(toHash)
 
 
     except ValueError:

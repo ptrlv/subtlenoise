@@ -29,5 +29,5 @@ live_loop :goodness do
   midi = n[0]
   #print midi
   use_synth :hollow
-  play midi, attack: 0, decay: 0.05, release: duration, res: 0.8, amp: ampFactor, cutoff: 110, pan: n[2]
+  play midi, attack: 0, decay: 0.05, release: duration, res: 0.8, amp: ampFactor, cutoff: n[3], pan: n[2]
 end
