@@ -150,6 +150,7 @@ def on_message(mosq, userdata, msg):
     except ValueError:
         msg = "ValueError: {}".format(content)
         logging.warning(msg)
+        raise
     except:
         raise
 
@@ -185,7 +186,7 @@ def main():
 
     mqttc = mqtt.Client()
     mqttc.connect(HOST, PORT)
-    mqttc.subscribe('test')
+    mqttc.subscribe('wrapper') #Changed from test to wrapper.
     mqttc.on_message = on_message
     while True:
         mqttc.loop()
