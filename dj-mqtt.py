@@ -106,7 +106,7 @@ def main():
 
     mqttc = mqtt.Client()
     mqttc.connect(HOST, PORT)
-    mqttc.subscribe('test')
+    mqttc.subscribe('wrapper')
     mqttc.on_message = on_message
     while True:
         mqttc.loop()
