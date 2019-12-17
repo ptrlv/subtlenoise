@@ -43,9 +43,13 @@ class bcolors:
 def hashToP_C(hashable):
     #Hashes an input and returns a pan value from -1 to 1.
     num = hash(hashable)
-    digits = int(math.log10(abs(num)))+1
-
-    pan = num * 10**(digits*-1)
+    
+    if num == 0:
+        #print("Num is 0.")
+        pan = 0
+    else:
+        digits = int(math.log10(abs(num)))+1
+        pan = num * 10**(digits*-1)
 
     sign = 1
     if num % 2 == 0:
@@ -133,9 +137,14 @@ def on_message(mosq, userdata, msg):
             msg.add_arg(duration)
 
             toSplit = content.split()[-1]
-            toHash = toSplit.split(':')[0]
+            try:
+                toHash = toSplit.split(':')[0]
+                #print('{' + toHash + '}')
+            except:
+                print('ERROR BAD HASH')
             
             params = hashToP_C(toHash)
+            #print(params)
             msg.add_arg(params[0])
             msg.add_arg(params[1])
 
@@ -190,6 +199,7 @@ def main():
     mqttc.on_message = on_message
     while True:
         mqttc.loop()
+        
         #Checks for if pause key 'p' or resume key 'r' have been pressed.
         try:
             #Stops printing incoming mqtt messages to terminal.
