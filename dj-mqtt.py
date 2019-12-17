@@ -113,25 +113,31 @@ def on_message(mosq, userdata, msg):
             scale = [71, 69, 64, 61, 57, 52, 45, 33] #Shortest = highest
 
             logTime = math.log(duration)
-            midi = 0
-            if logTime <= 4.0:
-                midi = scale[0]
-            elif 4.0 <= logTime <= 5.0:
-                midi = scale[1]
-            elif 5.0 <= logTime <= 6.0:
-                midi = scale[2]
-            elif 6.0 <= logTime <= 7.0:
-                midi = scale[3]
-            elif 7.0 <= logTime <= 8.0:
-                midi = scale[4]
-            elif 8.0 <= logTime <= 9.0:
-                midi = scale[5]
-            elif 9.0 <= logTime <= 10.0:
-                midi = scale[6]
-            elif 10.0 <= logTime:
-                midi = scale[7]
+
+            if duration <= 200000:
+                midi = 7055 - (7000/math.log(200000))*logTime
             else:
-                print("ERROR BIN SYSTEM NOT WORKING.")
+                midi = 55
+
+            # midi = 0
+            # if logTime <= 4.0:
+            #     midi = scale[0]
+            # elif 4.0 <= logTime <= 5.0:
+            #     midi = scale[1]
+            # elif 5.0 <= logTime <= 6.0:
+            #     midi = scale[2]
+            # elif 6.0 <= logTime <= 7.0:
+            #     midi = scale[3]
+            # elif 7.0 <= logTime <= 8.0:
+            #     midi = scale[4]
+            # elif 8.0 <= logTime <= 9.0:
+            #     midi = scale[5]
+            # elif 9.0 <= logTime <= 10.0:
+            #     midi = scale[6]
+            # elif 10.0 <= logTime:
+            #     midi = scale[7]
+            # else:
+            #     print("ERROR BIN SYSTEM NOT WORKING.")
 
             msg.add_arg(midi)
             msg.add_arg(duration)
