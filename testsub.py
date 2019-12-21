@@ -12,7 +12,7 @@ def on_message(mosq, userdata, msg):
 
 def mqttHandler():
     mqttc.connect(HOST, PORT)
-    mqttc.subscribe('test')
+    mqttc.subscribe('fal30')
     while True:
         mqttc.loop()
 

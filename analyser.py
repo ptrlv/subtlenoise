@@ -14,6 +14,7 @@ import time
 import socket
 import sys
 import math
+import statistics
 
 import paho.mqtt.client as mqtt
 #from pythonosc import osc_bundle
@@ -40,6 +41,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+#Checks if part of message being looked at has been seen before and counts it.
 def dictCheck(pos, chunks):
     global storeDicts
     if chunks[pos] in storeDicts[pos]:
@@ -48,6 +50,7 @@ def dictCheck(pos, chunks):
         storeDicts[pos][chunks[pos]] = 1
     return
 
+#Checks each part of the received message to see if a dictionary exists for that chunk and calls dictCheck().
 def update(chunks):
     global storeDicts
     if len(storeDicts) < len(chunks):
@@ -62,13 +65,7 @@ def update(chunks):
         for i in range(len(chunks)):
             dictCheck(i, chunks)
 
-    '''
-    f= open("dicts.txt","w+")
-    for item in storeDicts:
-        f.write(str(item) + '\r')
-    f.close()
-    '''
-
+#Splits the received message into chunks and calls update() on the list of chunks.
 def on_message(mosq, userdata, msg):
     content = msg.payload.decode("utf-8").rstrip()[:140]
 
@@ -87,13 +84,14 @@ def on_message(mosq, userdata, msg):
     except:
         raise
 
+#Runs message receive loop and exits to start analysis when user inputs "ctrl+shift+X".
 def main():
     global storeDicts
     storeDicts = []
 
     mqttc = mqtt.Client()
     mqttc.connect(HOST, PORT)
-    mqttc.subscribe('wrapper') #Changed from test to wrapper.
+    mqttc.subscribe('fal30') #Changed from test to wrapper.
     mqttc.on_message = on_message
     while True:
         mqttc.loop()
@@ -122,6 +120,8 @@ def main():
 
     print("End of program.")
 
+#Checks whether each dictionary of received message chunks is purely numerical.
+#Sends dictionary to relevant numProcess() or strProcess() depending on result.
 def analyse():
     global storeData
     storeData = []
@@ -145,23 +145,28 @@ def analyse():
             strProcess(i)
     return
 
+#Processes purely numerical dictionaries to get useful data for sound creation.
 def numProcess(pos):
     numList = []
     for item in list(storeDicts[pos]):
         try:
             toAppend = int(item)
-            print("Made int")
+            #print("Made int")
         except ValueError:
             toAppend = float(item)
-            print("Made float")
+            #print("Made float")
         numList.append(toAppend)
     numList.sort()
     #print(numList)
     storeData[pos]["min"] = float(numList[0])
     storeData[pos]["max"] = float(numList[-1])
     storeData[pos]["range"] = (float(numList[-1]) - float(numList[0]))
+
+    cutPoints = binData(pos, numList)
+    storeData[pos]["bin boundaries"] = cutPoints
     return
 
+#Processes other dictionaries to rate them for importance wrt sonification.
 def strProcess(pos):
     strList = []
     strList = list(storeDicts[pos])
@@ -170,9 +175,41 @@ def strProcess(pos):
     for i in range(len(strList)):
         totalf += storeDicts[pos][strList[i]]
 
-    rating = totalf / len(strList)
+    #Calculates rating of how strong patterns are in the data.
+    if len(strList) > 1:
+        rating = totalf / len(strList)
+    else:
+        rating = 0 #Rates as not useful chunks which always have the same value.
+
     storeData[pos]["num items"] = len(strList)
     storeData[pos]["rating"] = rating
+
+#Takes a range of numbers and bins them into useful subgroups for mapping to 8 musical notes.
+def binData(pos, numList):
+    #Need to generate full list of every value received.
+    fullList = []
+    for item in numList:
+        i = 0
+        while i < storeDicts[pos][str(item)]:
+            fullList.append(item)
+            i+=1
+
+    #print(statistics.quantiles(fullList, n=8, method='exclusive'))
+    #cutList = statistics.quantiles(fullList, n=8, method='inclusive')
+    cutList = []
+
+    #More useful binning, accounts for spikes in frequency of one result.
+    #Needs to iterate across all the cuts.
+    i = 8
+    while i > 1:
+        val = statistics.quantiles(fullList, n=i, method='exclusive')[0]
+        cutList.append(val)
+        while fullList[0] <= val:
+            fullList.pop(0)
+        i -= 1 
+
+    #print(cutList)
+    return cutList
 
 if __name__ == "__main__":
     sys.exit(main())
