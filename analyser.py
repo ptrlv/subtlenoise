@@ -118,6 +118,24 @@ def main():
         g.write(str(item) + '\r')
     g.close()
 
+    print("Trimming data")
+
+    trim()
+
+    f= open("dictsTrimmed.txt","w+")
+    for item in storeDicts:
+        f.write(str(item) + '\r')
+    f.close()
+
+    print("Analysing trimmed data.")
+
+    analyse()
+
+    g= open("dataTrimmed.txt","w+")
+    for item in storeData:
+        g.write(str(item) + '\r')
+    g.close()
+
     print("End of program.")
 
 #Checks whether each dictionary of received message chunks is purely numerical.
@@ -158,9 +176,14 @@ def numProcess(pos):
         numList.append(toAppend)
     numList.sort()
     #print(numList)
-    storeData[pos]["min"] = float(numList[0])
-    storeData[pos]["max"] = float(numList[-1])
-    storeData[pos]["range"] = (float(numList[-1]) - float(numList[0]))
+    if len(numList) > 0:
+        storeData[pos]["min"] = float(numList[0])
+        storeData[pos]["max"] = float(numList[-1])
+        storeData[pos]["range"] = (float(numList[-1]) - float(numList[0]))
+    else:
+        storeData[pos]["min"] = "N/A"
+        storeData[pos]["max"] = "N/A"
+        storeData[pos]["range"] = "N/A"
 
     cutPoints = binData(pos, numList)
     storeData[pos]["bin boundaries"] = cutPoints
@@ -200,16 +223,39 @@ def binData(pos, numList):
 
     #More useful binning, accounts for spikes in frequency of one result.
     #Needs to iterate across all the cuts.
-    i = 8
+    if len(list(storeDicts[pos])) > 8:
+        i = 8
+    else:
+        i = len(list(storeDicts[pos]))-1
+    #print("i value is" + str(i))
+    #print("fullList is" + str(fullList))
+
     while i > 1:
         val = statistics.quantiles(fullList, n=i, method='exclusive')[0]
         cutList.append(val)
         while fullList[0] <= val:
             fullList.pop(0)
-        i -= 1 
+        i -= 1
 
     #print(cutList)
     return cutList
+
+#Removes keys with values that are the same as values in earlier chunks.
+def trim():
+    for i in range(len(storeDicts)): #Iterating through each chunk from start to finish.
+        if storeData[i]["isNumber"] == False:
+            for entry in list(storeDicts[i]): #Iterates through each key in the dict.
+                val = storeDicts[i][entry] #Stores value to be compared against.
+                if val > 1:
+                    j = i + 1
+                    while j < len(storeDicts): #Iterates across all chunks after the present one.
+                        if storeData[j]["isNumber"] == False:
+                            for item in list(storeDicts[j]): #Iterates through the dict, checking for matches.
+                                if storeDicts[j][item] == val:
+                                    storeDicts[j].pop(item)
+                                    break #Removes matching key and breaks loop
+                        j += 1
+    return
 
 if __name__ == "__main__":
     sys.exit(main())

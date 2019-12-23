@@ -8,7 +8,8 @@ PORT=1883
 HOST='py-dev.lancs.ac.uk'
 
 def on_message(mosq, userdata, msg):
-    print("Got topic: " + msg.topic + ", message: " + msg.payload.decode("utf-8"))
+    content = msg.payload.decode("utf-8")#.rstrip()[:140]
+    print(content.split())
 
 def mqttHandler():
     mqttc.connect(HOST, PORT)
