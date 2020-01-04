@@ -237,14 +237,20 @@ def main():
             pass
 
 def numberPitch(n, i):
-    scale = [71, 69, 64, 61, 57, 52, 45, 33] #Shortest = highest
-
+    #scale = [71, 69, 64, 61, 57, 52, 45, 33] #Shortest = highest
+    scale = [493.88, 440, 329.63, 277.18, 220.00, 164.81, 110.00, 55.00]
+    #print(str(n) + ' ' + str(i))
     note = "empty"
+    #print(paramData[i]['bin boundaries'][1])
     for j in range(len(paramData[i]['bin boundaries'])):
-        if n <= paramData[i]['bin boundaries'][j]:
+        #print(str(n) + ' ' + str(paramData[i]['bin boundaries'][j]))
+        if float(n) <= float(paramData[i]['bin boundaries'][j]):
+            #print('Got here')
             note = scale[j]
+            break
 
     if note == "empty":
+        #print("Got to end of list")
         note = scale[len(paramData[i]['bin boundaries'])]
     return note
 
@@ -260,9 +266,9 @@ def numberDuration(n):
     return duration
 
 def numberPan(n, i):
-    if n <= paramData[i]['min']:
+    if float(n) <= float(paramData[i]['min']):
         pan = -1
-    elif n >= paramData[i]['max']:
+    elif float(n) >= float(paramData[i]['max']):
         pan = 1
     else:
         pan = (2*(n-paramData[i]['min'])/(paramData[i]['range']))-1
